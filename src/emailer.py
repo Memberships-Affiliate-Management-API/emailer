@@ -14,7 +14,7 @@ __github_repo__ = "https://github.com/freelancing-solutions/memberships-and-affi
 __github_profile__ = "https://github.com/freelancing-solutions/"
 
 from datetime import timedelta, datetime
-from schedulers.scheduler import task_scheduler
+from src.schedulers.scheduler import task_scheduler
 from config import config_instance
 from typing import List, Optional, Callable, Coroutine
 import aiohttp
@@ -41,9 +41,6 @@ class Emailer:
         self._mailgun_api_key = config_instance.MAILGUN_API_KEY
         self._mailgun_end_point = "https://api.mailgun.net/v3/{}/messages".format(config_instance.MAILGUN_DOMAIN)
         self._mailgun_no_response_email = config_instance.MAILGUN_NO_RESPONSE
-        self._admin_get_user_endpoint = '_api/v1/admin/users/get'
-        self._admin_get_membership_plan_endpoint = '_api/v1/admin/membership-plans/get'
-        self._admin_get_organization_endpoint = '_api/v1/admin/organizations/get'
         self._secret_key: str = config_instance.SECRET_KEY
 
     def _get_response(self, job_name, job_id) -> tuple:
