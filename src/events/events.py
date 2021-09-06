@@ -39,7 +39,7 @@ class EventProcessor:
     def publish(self, method: str, body: dict):
         """
             **publish**
-                will publish messages back to the api
+                will publish messages back to the routing target
         :return:
         """
         properties = pika.BasicProperties(method)
@@ -90,8 +90,10 @@ class EventProcessor:
         if properties.content_type == "send-email":
             # call send email here
             email, subject, text, html, o_tag = self.get_email_fields(data=data)
-            response = emailer_instance._send_with_mailgun_rest_api(to_list=[email], subject=subject, text=text,
-                                                                    html=html, o_tag=o_tag)
+            emailer_instance._send_with_mailgun_rest_api(to_list=[email], subject=subject, text=text,
+                                                         html=html, o_tag=o_tag)
+            return 'OK', 200
+
         elif properties.content_type == "schedule-email":
             """
                 
@@ -113,3 +115,5 @@ class EventProcessor:
                                                        kwargs=_kwargs, job_name=_job_name,
                                                        time_scheduled=time_scheduled))
             self.publish(method='email-scheduled', body=response)
+
+            return 'OK', 200
