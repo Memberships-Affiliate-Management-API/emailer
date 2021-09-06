@@ -8,14 +8,15 @@ __twitter__ = "@blueitserver"
 __github_repo__ = "https://github.com/freelancing-solutions/memberships-and-affiliate-api"
 __github_profile__ = "https://github.com/freelancing-solutions/"
 
-import os
 import datetime
+import os
 import random
 import string
 import time
-from typing import List, Optional, Union
 from datetime import date
 from datetime import time as time_class
+from typing import List
+
 from src.config import config_instance
 
 # NOTE set of characters to use when generating Unique ID
@@ -210,28 +211,6 @@ def get_payment_methods() -> List[str]:
         :return list of usable payment methods
     """
     return ['eft', 'paypal']
-
-
-def get_plan_scheduled_terms() -> List[str]:
-    """
-        **get_plan_scheduled_terms**
-            NOTE: fetches payment plan schedules from config_instance
-
-        :return list -> list of usable scheduled terms e.g monthly ...
-    """
-    # TODO - ensure scheduled terms matches those in paypal
-    return config_instance.PAYMENT_PLANS_SCHEDULES
-
-
-def get_scheduled_term_days() -> List[int]:
-    """
-        **get_scheduled_term_days**
-            NOTE: returns the days the transactions can be made once scheduled term
-            has been reached for payment
-
-        :return list -> list of usable payment plan days
-    """
-    return config_instance.PAYMENT_PLANS_PAYMENT_DAYS
 
 
 def can_cache() -> bool:

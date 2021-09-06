@@ -16,16 +16,3 @@ from src.utils.utils import create_id as create_unique_id
 
 task_scheduler = BackgroundScheduler({'apscheduler.timezone': 'Africa/Johannesburg'})
 cron_scheduler = BackgroundScheduler({'apscheduler.timezone': 'Africa/Johannesburg'})
-
-
-def schedule_func(func: Callable, kwargs: dict) -> None:
-    """
-    **schedule_cache_deletion**
-        schedule cache deletion such that it occurs sometime time in the future
-    :param func:
-    :param kwargs:
-    :return: None
-    """
-    twenty_seconds_after = datetime.now() + timedelta(seconds=30)
-    task_scheduler.add_job(func=func, trigger='date', run_date=twenty_seconds_after, kwargs=kwargs, id=create_unique_id(),
-                           name="schedule_func", misfire_grace_time=360)
