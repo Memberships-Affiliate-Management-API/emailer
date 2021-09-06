@@ -20,6 +20,8 @@ from typing import List, Optional, Callable, Coroutine
 import aiohttp
 import asyncio
 
+from main import events_instance
+
 from src.utils.utils import datetime_now, create_id
 
 
@@ -43,16 +45,6 @@ class Emailer:
         self._mailgun_no_response_email = config_instance.MAILGUN_NO_RESPONSE
         self._secret_key: str = config_instance.SECRET_KEY
 
-    def _get_response(self, job_name, job_id) -> tuple:
-        """
-
-        :param job_name:
-        :param job_id:
-        :return:
-        """
-        pass
-
-    # TODO - replace requests with this all over the application
     @staticmethod
     async def _async_request(_url, json_data, headers, auth) -> tuple:
         async with aiohttp.ClientSession() as session:
@@ -83,7 +75,11 @@ class Emailer:
         _headers: dict = {'content-type': 'application/json'}
         response = asyncio.run(self._async_request(_url=self._mailgun_end_point, json_data=data, headers=_headers,
                                                    auth=_auth))
-        return response  # dict, status_code
+
+        data, status = response
+        data.update(status_code=status)
+
+        events_instance.publish(method='email-delivery-status', body=data)
 
     @staticmethod
     async def _base_email_scheduler(func: Callable, kwargs: dict, job_name: str = create_id(),
@@ -106,3 +102,5 @@ class Emailer:
 
     @staticmethod
     async def _create_job_name(header_name: str) -> str: return f'{header_name}{create_id()[0:20]}'
+
+
