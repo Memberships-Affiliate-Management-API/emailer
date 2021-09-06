@@ -23,8 +23,9 @@ class EventProcessor:
     """
 
     def __init__(self):
+        self._valid_routing_targets = ['membership-api', 'system-admin-portal', 'client-admin-portal']
         self._queue_emailer: str = 'emailer'
-        self._queue_api: str = 'api'
+        self._routing_target: str = 'membership-api'
         self.params = pika.URLParameters()
         self.connection = pika.BlockingConnection(self.params)
         self.channel = self.connection.channel()
@@ -42,11 +43,17 @@ class EventProcessor:
         :return:
         """
         properties = pika.BasicProperties(method)
-        self.channel.basic_publish(exchange='', routing_key=self._queue_api, body=json.dumps(body),
+        self.channel.basic_publish(exchange='', routing_key=self._routing_target, body=json.dumps(body),
                                    properties=properties)
 
-    def change_publish_to(self):
-        pass
+    def change_routing_target(self, target: str):
+        """
+        **change_routing_target**
+            changes the target the event processor sends messages to
+        :param target:
+        :return:
+        """
+        self._routing_target = target if target in self._valid_routing_targets else 'membership-api'
 
     @staticmethod
     def get_email_fields(data: dict) -> tuple:
