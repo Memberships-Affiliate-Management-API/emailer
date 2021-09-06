@@ -61,7 +61,7 @@ class Emailer:
                 return json_data, response.status
 
     def _send_with_mailgun_rest_api(self, to_list: List[str], subject: str, text: str, html: str,
-                                          o_tag: List[str] = None) -> tuple:
+                                    o_tag: List[str] = None) -> tuple:
         """
         **_send_with_mailgun_rest_api**
             a method to send email via rest api
@@ -87,7 +87,8 @@ class Emailer:
 
     @staticmethod
     async def _base_email_scheduler(func: Callable, kwargs: dict, job_name: str = create_id(),
-                                    time_scheduled: datetime = lambda time_scheduled: time_scheduled + datetime_now() + timedelta(seconds=10)) -> dict:
+                                    time_scheduled: datetime = lambda time_scheduled:
+                                    time_scheduled + datetime_now() + timedelta(seconds=10)) -> dict:
         """
 
         :param func:
