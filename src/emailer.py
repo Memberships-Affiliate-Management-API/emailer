@@ -80,6 +80,7 @@ class Emailer:
         data.update(status_code=status)
 
         events_instance.publish(method='email-delivery-status', body=data)
+        return data, status
 
     @staticmethod
     async def _base_email_scheduler(func: Callable, kwargs: dict, job_name: str = create_id(),

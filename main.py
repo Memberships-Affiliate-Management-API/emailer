@@ -5,10 +5,11 @@ from typing import Optional
 from datetime import datetime
 from src.emailer import Emailer
 from src.utils.utils import datetime_now
-
+from src.events.events import EventProcessor
 app = FastAPI()
 
 emailer_instance: Emailer = Emailer()
+events_instance: EventProcessor = EventProcessor()
 
 
 @app.get("/")
