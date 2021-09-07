@@ -4,3 +4,4 @@ aiohttp
 python-decouple
 elasticsearch==7.0.0
 APScheduler==3.0.0
+pika
