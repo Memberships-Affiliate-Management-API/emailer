@@ -15,12 +15,12 @@ __github_profile__ = "https://github.com/freelancing-solutions/"
 
 from datetime import timedelta, datetime
 from src.schedulers.scheduler import task_scheduler
-from config import config_instance
+from src.config import config_instance
 from typing import List, Optional, Callable, Coroutine
 import aiohttp
 import asyncio
 
-from main import events_instance
+
 
 from src.utils.utils import datetime_now, create_id
 
@@ -65,6 +65,7 @@ class Emailer:
         :param html: the html part of the email
         :return: bool
         """
+        from main import events_instance
         # NOTE: from mail must be registered with MAILGUN
         from_str: str = f'{config_instance.APP_NAME} <{self._mailgun_no_response_email}>'
         to_str: List[str] = to_list
@@ -87,6 +88,8 @@ class Emailer:
                                     time_scheduled: datetime = lambda time_scheduled:
                                     time_scheduled + datetime_now() + timedelta(seconds=10)) -> dict:
         """
+        **_base_email_scheduler**
+            scheduler for sending emails
 
         :param func:
         :param kwargs:
@@ -102,6 +105,6 @@ class Emailer:
         return dict(job_id=_job_id, job_name=job_name, time_scheduled=time_scheduled)
 
     @staticmethod
-    async def _create_job_name(header_name: str) -> str: return f'{header_name}{create_id()[0:20]}'
+    def _create_job_name(header_name: str) -> str: return f'{header_name}{create_id()[0:20]}'
 
 
