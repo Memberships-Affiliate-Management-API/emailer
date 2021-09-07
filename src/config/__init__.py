@@ -60,6 +60,7 @@ class Config:
         self.IS_PRODUCTION: bool = True
         self.SECRET_KEY: str = os.environ.get("SECRET_KEY") or config("SECRET_KEY")
         self.DEBUG: bool = False
+        self.RABBIT_MQ_URL: str = os.environ.get("RABBIT_MQ_URL") or config("RABBIT_MQ_URL")
 
         # NOTE : setting IS_PRODUCTION here - could find a better way of doing this rather
         # than depending on the OS
