@@ -1,9 +1,9 @@
 import asyncio
-
 import pika
 import json
 from datetime import datetime
-from main import emailer_instance
+
+from src.config import config_instance
 
 
 class EventProcessor:
@@ -26,7 +26,7 @@ class EventProcessor:
         self._valid_routing_targets = ['membership-api', 'system-admin-portal', 'client-admin-portal']
         self._queue_emailer: str = 'emailer'
         self._routing_target: str = 'membership-api'
-        self.params = pika.URLParameters()
+        self.params = pika.URLParameters(url=config_instance.RABBIT_MQ_URL)
         self.connection = pika.BlockingConnection(self.params)
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=self._queue_emailer)
@@ -84,6 +84,7 @@ class EventProcessor:
         :param body:
         :return:
         """
+        from main import emailer_instance
         data: dict = json.loads(body)
         if properties.content_type == "send-email":
             # call send email here
@@ -106,7 +107,7 @@ class EventProcessor:
             # call schedule email here
             email, subject, text, html, o_tag, job_name, time_scheduled = self.get_email_fields(data=data)
             _kwargs: dict = dict(to_list=[email], subject=subject, text=text, html=html, o_tag=o_tag)
-            _job_name: str = await emailer_instance._create_job_name(header_name=job_name)
+            _job_name: str = emailer_instance._create_job_name(header_name=job_name)
 
             response = asyncio.run(
                 emailer_instance._base_email_scheduler(func=emailer_instance._send_with_mailgun_rest_api,
