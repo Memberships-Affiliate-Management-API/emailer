@@ -31,7 +31,6 @@ class EventProcessor:
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue=self._queue_emailer)
         self.channel.basic_consume(queue=self._queue_emailer, on_message_callback=self.callback, auto_ack=True)
-        print('started consuming')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.channel.close()
@@ -40,6 +39,7 @@ class EventProcessor:
         """
             **publish**
                 will publish messages back to the routing target
+                publishes messages to one of the routing targets selected.
         :return:
         """
         properties = pika.BasicProperties(method)
@@ -58,13 +58,11 @@ class EventProcessor:
     @staticmethod
     def get_email_fields(data: dict) -> tuple:
         """
-            to_list: List[str],
-            subject: str,
-            text: str,
-            html: str,
-            o_tag: Optional[List[str]] = None
+        **get_email_fields**
+            with email data fetch email fields
+
         :param data:
-        :return:
+        :return: tuple
         """
         email: str = data.get('email')
         subject: str = data.get('subject')

@@ -76,11 +76,11 @@ class Emailer:
         response = asyncio.run(self._async_request(_url=self._mailgun_end_point, json_data=data, headers=_headers,
                                                    auth=_auth))
 
-        data, status = response
-        data.update(status_code=status)
+        data, status_code = response
+        data.update(status_code=status_code)
 
         events_instance.publish(method='email-delivery-status', body=data)
-        return data, status
+        return data, status_code
 
     @staticmethod
     async def _base_email_scheduler(func: Callable, kwargs: dict, job_name: str = create_id(),
