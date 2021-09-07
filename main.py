@@ -19,10 +19,21 @@ async def root():
 
 @app.post("/send-mail")
 async def send_email(email: str, subject: str, text: str, html: str, o_tag: Optional[str]) -> tuple:
-    """main root of api"""
+    """
+    **send_email**
+        this end-points sends an email to a target recipients given only email, subject, text, html and o_tag
+
+    :param email: email address to send email to
+    :param subject: subject of the email
+    :param text: text formatted email body
+    :param html: html formatted email body
+    :param o_tag: email o:tag
+    :return:
+    """
     _response = emailer_instance._send_with_mailgun_rest_api(to_list=[email], subject=subject, text=text, html=html,
                                                              o_tag=o_tag)
-    return _response
+    data, status_code = _response
+    return dict(status=True, message='email was successfully sent', payload=data), status_code
 
 
 @app.post("/schedule-mail")
