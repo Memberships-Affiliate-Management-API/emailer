@@ -1,7 +1,8 @@
 """
     **Flask App Configuration Settings**
-    *Python Version 3.8 and above*
-    Used to setup environment variables for python flask app
+    **Python Version 3.8 and above**
+        Used to setup environment variables for python flask app
+
 """
 __developer__ = "mobius-crypt"
 __email__ = "mobiusndou@gmail.com"

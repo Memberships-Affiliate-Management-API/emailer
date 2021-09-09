@@ -20,8 +20,6 @@ from typing import List, Optional, Callable, Coroutine
 import aiohttp
 import asyncio
 
-
-
 from src.utils.utils import datetime_now, create_id
 
 
@@ -52,8 +50,8 @@ class Emailer:
                 json_data: dict = await response.json()
                 return json_data, response.status
 
-    def _send_with_mailgun_rest_api(self, to_list: List[str], subject: str, text: str, html: str,
-                                    o_tag: List[str] = None) -> tuple:
+    async def _send_with_mailgun_rest_api(self, to_list: List[str], subject: str, text: str, html: str,
+                                          o_tag: List[str] = None) -> tuple:
         """
         **_send_with_mailgun_rest_api**
             a method to send email via rest api
@@ -74,8 +72,9 @@ class Emailer:
         data: dict = {"from": from_str, "to": to_str, "subject": subject, "text": text, "html": html, 'o:tag': o_tag}
 
         _headers: dict = {'content-type': 'application/json'}
-        response = asyncio.run(self._async_request(_url=self._mailgun_end_point, json_data=data, headers=_headers,
-                                                   auth=_auth))
+
+        response = await self._async_request(_url=self._mailgun_end_point, json_data=data, headers=_headers,
+                                             auth=aiohttp.BasicAuth("api", self._mailgun_api_key))
 
         data, status_code = response
         data.update(status_code=status_code)
@@ -106,5 +105,3 @@ class Emailer:
 
     @staticmethod
     def _create_job_name(header_name: str) -> str: return f'{header_name}{create_id()[0:20]}'
-
-

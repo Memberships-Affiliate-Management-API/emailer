@@ -1,21 +1,18 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
-
 from typing import Optional
 from datetime import datetime
-
 from src.utils.utils import datetime_now
-
+from src.emailer import Emailer
 from src.events.events import EventProcessor
 
 events_instance: EventProcessor = EventProcessor()
-
-from src.emailer import Emailer
-
 emailer_instance: Emailer = Emailer()
 
 app = FastAPI()
+
+events_instance.init_consume()
 
 
 class EmailModel(BaseModel):
@@ -45,9 +42,9 @@ async def send_email(email_data: EmailModel) -> tuple:
     :param email_data: email data_type
     :return:
     """
-    _response = emailer_instance._send_with_mailgun_rest_api(to_list=[email_data.email], subject=email_data.subject,
-                                                             text=email_data.text, html=email_data.html,
-                                                             o_tag=email_data.o_tag)
+    _response = await emailer_instance._send_with_mailgun_rest_api(to_list=[email_data.email], subject=email_data.subject,
+                                                                   text=email_data.text, html=email_data.html,
+                                                                   o_tag=email_data.o_tag)
     data, status_code = _response
     return dict(status=True, message='email was successfully sent', payload=data), status_code
 
